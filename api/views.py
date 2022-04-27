@@ -282,7 +282,6 @@ class GetRoomByStudyCategory(APIView):
             if not studyCategory:
                 return Response({'msg': 'StudyCategory does not exists.'}, status=status.HTTP_403_FORBIDDEN)
             studyCategory = studyCategory[0]
-            name = []
             for room in studyCategory.classroom_set.all():
                 data = GetRoomInfoSerializer(room).data
                 data["studyCategory"] = room.studyCategory.name
@@ -298,7 +297,9 @@ class GetAllUsers(APIView):
         users = User.objects.all()
         data = []
         for user in users:
-            data.append(GetAllUserInfoSerializer(user).data)
+            data1 = GetAllUserInfoSerializer(user).data
+            data1["classRoom"] = user.classRoom.name if user.classRoom else None
+            data.append(data1)
         return Response(data, status=status.HTTP_200_OK)
 
 
